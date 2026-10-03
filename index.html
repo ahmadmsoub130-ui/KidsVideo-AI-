@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <meta name="description"
+        content="مولد فيديوهات الذكاء الاصطناعي من النص">
+
+  <title>KidsVideo AI | تحويل النص إلى فيديو</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family:
+        Arial,
+        Tahoma,
+        sans-serif;
+
+      background:
+        linear-gradient(
+          135deg,
+          #111827,
+          #1e1b4b,
+          #312e81
+        );
+
+      min-height: 100vh;
+      color: white;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 850px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    /* HEADER */
+
+    header {
+      text-align: center;
+      padding: 25px 10px 15px;
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #c7d2fe;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* CARD */
+
+    .card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+
+      backdrop-filter: blur(15px);
+
+      border-radius: 22px;
+
+      padding: 22px;
+
+      margin-top: 20px;
+
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.25);
+    }
+
+    label {
+      display: block;
+
+      font-weight: bold;
+
+      margin-bottom: 8px;
+
+      color: #e0e7ff;
+    }
+
+    textarea {
+      width: 100%;
+
+      min-height: 160px;
+
+      resize: vertical;
+
+      border: none;
+
+      outline: none;
+
+      border-radius: 16px;
+
+      padding: 16px;
+
+      font-size: 16px;
+
+      line-height: 1.8;
+
+      font-family:
+        Arial,
+        Tahoma,
+        sans-serif;
+
+      background: #ffffff;
+
+      color: #111827;
+    }
+
+    textarea:focus {
+      box-shadow:
+        0 0 0 3px rgba(129,140,248,0.5);
+    }
+
+    .examples {
+      margin-top: 10px;
+
+      display: flex;
+
+      gap: 8px;
+
+      flex-wrap: wrap;
+    }
+
+    .example {
+      background: rgba(255,255,255,0.1);
+
+      border: 1px solid rgba(255,255,255,0.12);
+
+      color: #e0e7ff;
+
+      border-radius: 50px;
+
+      padding: 7px 12px;
+
+      cursor: pointer;
+
+      font-size: 13px;
+    }
+
+    .example:hover {
+      background: rgba(255,255,255,0.18);
+    }
+
+    /* OPTIONS */
+
+    .options {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 12px;
+
+      margin-top: 20px;
+    }
+
+    .option-box {
+      background: rgba(0,0,0,0.15);
+
+      border-radius: 14px;
+
+      padding: 12px;
+    }
+
+    select {
+      width: 100%;
+
+      border: none;
+
+      outline: none;
+
+      border-radius: 10px;
+
+      padding: 11px;
+
+      background: white;
+
+      color: #111827;
+
+      font-size: 14px;
+    }
+
+    /* BUTTON */
+
+    .generate-btn {
+
+      width: 100%;
+
+      border: none;
+
+      border-radius: 16px;
+
+      padding: 16px;
+
+      margin-top: 22px;
+
+      font-size: 18px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+      color: white;
+
+      background:
+        linear-gradient(
+          135deg,
+          #6366f1,
+          #8b5cf6
+        );
+
+      box-shadow:
+        0 10px 30px rgba(99,102,241,0.3);
+
+      transition: 0.2s;
+    }
+
+    .generate-btn:hover {
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 15px 35px rgba(99,102,241,0.4);
+    }
+
+    .generate-btn:disabled {
+      opacity: 0.6;
+
+      cursor: not-allowed;
+
+      transform: none;
+    }
+
+    /* STATUS */
+
+    .status {
+      display: none;
+
+      text-align: center;
+
+      margin-top: 22px;
+
+      padding: 18px;
+
+      border-radius: 15px;
+
+      background: rgba(0,0,0,0.2);
+    }
+
+    .spinner {
+
+      width: 42px;
+      height: 42px;
+
+      border-radius: 50%;
+
+      border: 4px solid rgba(255,255,255,0.2);
+
+      border-top-color: white;
+
+      animation:
+        spin 1s linear infinite;
+
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin {
+
+      to {
+        transform: rotate(360deg);
+      }
+
+    }
+
+    .status-text {
+      font-size: 15px;
+
+      color: #e0e7ff;
+
+      line-height: 1.7;
+    }
+
+    /* RESULT */
+
+    .result {
+      display: none;
+
+      margin-top: 22px;
+    }
+
+    .result h2 {
+      margin-bottom: 12px;
+
+      font-size: 20px;
+    }
+
+    video {
+
+      width: 100%;
+
+      max-height: 650px;
+
+      border-radius: 18px;
+
+      background: black;
+
+      display: block;
+    }
+
+    .download-btn {
+
+      display: block;
+
+      width: 100%;
+
+      text-align: center;
+
+      margin-top: 12px;
+
+      padding: 14px;
+
+      border-radius: 14px;
+
+      background: #10b981;
+
+      color: white;
+
+      text-decoration: none;
+
+      font-weight: bold;
+    }
+
+    /* ERROR */
+
+    .error {
+
+      display: none;
+
+      margin-top: 15px;
+
+      background: rgba(239,68,68,0.18);
+
+      border: 1px solid rgba(239,68,68,0.3);
+
+      padding: 14px;
+
+      border-radius: 12px;
+
+      color: #fecaca;
+
+      line-height: 1.7;
+    }
+
+    /* INFO */
+
+    .info {
+
+      margin-top: 20px;
+
+      padding: 15px;
+
+      border-radius: 14px;
+
+      background: rgba(255,255,255,0.05);
+
+      color: #c7d2fe;
+
+      font-size: 13px;
+
+      line-height: 1.8;
+    }
+
+    footer {
+
+      text-align: center;
+
+      padding: 30px 10px;
+
+      color: #a5b4fc;
+
+      font-size: 13px;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 650px) {
+
+      .container {
+        padding: 12px;
+      }
+
+      .logo {
+        font-size: 27px;
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .options {
+        grid-template-columns: 1fr;
+      }
+
+      textarea {
+        min-height: 180px;
+      }
+
+      .generate-btn {
+        font-size: 17px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header>
+
+      <div class="logo">
+        🎬 KidsVideo AI
+      </div>
+
+      <div class="subtitle">
+        حوّل فكرتك إلى فيديو بالذكاء الاصطناعي
+        <br>
+        مصمم خصيصًا لفيديوهات الأطفال وYouTube Shorts
+      </div>
+
+    </header>
+
+
+    <main class="card">
+
+      <label for="prompt">
+        اكتب فكرة الفيديو
+      </label>
+
+      <textarea
+        id="prompt"
+        maxlength="2500"
+        placeholder="مثال:
+بطة صفراء وأرنب أزرق يتسابقان في حديقة ملونة، البطة تنزلق بطريقة مضحكة ثم يضحكان معًا..."
+      ></textarea>
+
+
+      <div class="examples">
+
+        <button
+          class="example"
+          onclick="useExample(1)">
+          سباق مضحك
+        </button>
+
+        <button
+          class="example"
+          onclick="useExample(2)">
+          البحث عن الكنز
+        </button>
+
+        <button
+          class="example"
+          onclick="useExample(3)">
+          يوم ممطر
+        </button>
+
+      </div>
+
+
+      <div class="options">
+
+        <div class="option-box">
+
+          <label for="duration">
+            المدة
+          </label>
+
+          <select id="duration">
+
+            <option value="5">
+              5 ثواني
+            </option>
+
+            <option value="10">
+              10 ثواني
+            </option>
+
+            <option value="15" selected>
+              15 ثانية
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="option-box">
+
+          <label for="ratio">
+            المقاس
+          </label>
+
+          <select id="ratio">
+
+            <option value="9:16" selected>
+              9:16 Shorts
+            </option>
+
+            <option value="16:9">
+              16:9 YouTube
+            </option>
+
+            <option value="1:1">
+              1:1 مربع
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="option-box">
+
+          <label for="style">
+            الأسلوب
+          </label>
+
+          <select id="style">
+
+            <option value="3D Cartoon" selected>
+              3D Cartoon
+            </option>
+
+            <option value="Cute Animation">
+              Cute Animation
+            </option>
+
+            <option value="Pixar-like 3D">
+              3D Animated
+            </option>
+
+            <option value="Anime">
+              Anime
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <button
+        id="generateBtn"
+        class="generate-btn"
+        onclick="generateVideo()">
+
+        🎬 توليد الفيديو
+
+      </button>
+
+
+      <div
+        id="status"
+        class="status">
+
+        <div class="spinner"></div>
+
+        <div
+          id="statusText"
+          class="status-text">
+
+          جاري تجهيز الفيديو...
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="error"
+        class="error">
+      </div>
+
+
+      <div
+        id="result"
+        class="result">
+
+        <h2>
+          🎉 الفيديو جاهز
+        </h2>
+
+        <video
+          id="video"
+          controls
+          playsinline>
+        </video>
+
+        <a
+          id="downloadBtn"
+          class="download-btn"
+          href="#"
+          download="kids-video.mp4">
+
+          ⬇️ تحميل الفيديو
+
+        </a>
+
+      </div>
+
+
+      <div class="info">
+
+        <strong>
+          ملاحظة:
+        </strong>
+
+        موقع GitHub Pages يعرض الواجهة فقط.
+        توليد الفيديو الحقيقي سيتم من خلال خادم آمن
+        حتى لا يظهر مفتاح الذكاء الاصطناعي للزوار.
+
+      </div>
+
+    </main>
+
+
+    <footer>
+
+      KidsVideo AI
+      <br>
+      AI Text to Video
+
+    </footer>
+
+  </div>
+
+
+<script>
+
+  /*
+   * =====================================================
+   * إعداد الاتصال بالخادم
+   * =====================================================
+   *
+   * في الخطوة التالية سنضع هنا رابط
+   * Supabase Edge Function.
+   *
+   * مثال:
+   *
+   * https://YOURPROJECT.supabase.co/functions/v1/generate-video
+   *
+   */
+
+  const API_ENDPOINT =
+    "https://YOUR-PROJECT.supabase.co/functions/v1/generate-video";
+
+
+  /*
+   * =====================================================
+   * أمثلة جاهزة
+   * =====================================================
+   */
+
+  function useExample(number) {
+
+    const prompt =
+      document.getElementById("prompt");
+
+    if (number === 1) {
+
+      prompt.value =
+        "بطة صفراء صغيرة ترتدي قبعة حمراء وأرنب أزرق صغير يحمل حقيبة خضراء يتسابقان في حديقة ملونة. تبدأ المسابقة بسرعة، تنزلق البطة بطريقة مضحكة وآمنة، ثم يضحكان معًا. أجواء مرحة ومناسبة للأطفال.";
+
+    }
+
+    if (number === 2) {
+
+      prompt.value =
+        "بطة صفراء وأرنب أزرق وثعلب برتقالي صغير يجدون خريطة كنز في حديقة ملونة. يبحثون عن الكنز ثم يجدون صندوقًا مليئًا بالنجوم والألعاب الملونة ويقفزون فرحًا. فيديو لطيف ومناسب للأطفال.";
+
+    }
+
+    if (number === 3) {
+
+      prompt.value =
+        "بطة صفراء وأرنب أزرق وثعلب برتقالي يلعبون في الحديقة عندما يبدأ المطر. يفتح الأرنب مظلة خضراء وتقفز البطة في بركة صغيرة بطريقة مضحكة، ثم تظهر الشمس ويرقص الأصدقاء معًا.";
+
+    }
+
+  }
+
+
+  /*
+   * =====================================================
+   * إنشاء Prompt محسّن
+   * =====================================================
+   */
+
+  function buildPrompt() {
+
+    const userPrompt =
+      document
+        .getElementById("prompt")
+        .value
+        .trim();
+
+    const style =
+      document
+        .getElementById("style")
+        .value;
+
+    const ratio =
+      document
+        .getElementById("ratio")
+        .value;
+
+    if (!userPrompt) {
+
+      throw new Error(
+        "اكتب فكرة الفيديو أولاً."
+      );
+
+    }
+
+
+    return `
+
+Create a high-quality children's animated video.
+
+Story:
+${userPrompt}
+
+Visual style:
+${style}
+
+Aspect ratio:
+${ratio}
+
+Important:
+Cute colorful characters.
+Friendly facial expressions.
+Smooth animation.
+Bright cheerful environment.
+Safe for young children.
+No violence.
+No scary scenes.
+No dangerous behavior.
+No copyrighted characters.
+Clear visual storytelling.
+Professional animation.
+Suitable for YouTube Shorts.
+
+`;
+
+  }
+
+
+  /*
+   * =====================================================
+   * توليد الفيديو
+   * =====================================================
+   */
+
+  async function generateVideo() {
+
+    const button =
+      document.getElementById("generateBtn");
+
+    const status =
+      document.getElementById("status");
+
+    const statusText =
+      document.getElementById("statusText");
+
+    const errorBox =
+      document.getElementById("error");
+
+    const result =
+      document.getElementById("result");
+
+    const video =
+      document.getElementById("video");
+
+    const download =
+      document.getElementById("downloadBtn");
+
+
+    errorBox.style.display =
+      "none";
+
+    result.style.display =
+      "none";
+
+    button.disabled =
+      true;
+
+    status.style.display =
+      "block";
+
+
+    try {
+
+      const prompt =
+        buildPrompt();
+
+      const duration =
+        document
+          .getElementById("duration")
+          .value;
+
+      const ratio =
+        document
+          .getElementById("ratio")
+          .value;
+
+
+      statusText.innerText =
+        "جاري إرسال طلب التوليد...";
+
+
+      /*
+       * إرسال الطلب إلى السيرفر
+       */
+
+      const response =
+        await fetch(
+          API_ENDPOINT,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify({
+
+              prompt: prompt,
+
+              duration:
+                Number(duration),
+
+              aspect_ratio:
+                ratio
+
+            })
+
+          }
+        );
+
+
+      if (!response.ok) {
+
+        let message =
+          "حدث خطأ أثناء إنشاء الفيديو.";
+
+        try {
+
+          const data =
+            await response.json();
+
+          if (data.error) {
+
+            message =
+              data.error;
+
+          }
+
+        } catch (e) {}
+
+        throw new Error(message);
+
+      }
+
+
+      const data =
+        await response.json();
+
+
+      /*
+       * السيرفر يجب أن يعيد:
+       *
+       * {
+       *   "video_url":
+       *   "https://....mp4"
+       * }
+       *
+       */
+
+      if (!data.video_url) {
+
+        throw new Error(
+          "تم إرسال الطلب، لكن لم يتم استلام رابط الفيديو."
+        );
+
+      }
+
+
+      statusText.innerText =
+        "تم إنشاء الفيديو بنجاح.";
+
+
+      video.src =
+        data.video_url;
+
+      download.href =
+        data.video_url;
+
+
+      result.style.display =
+        "block";
+
+
+      video.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+
+    } catch (error) {
+
+      console.error(error);
+
+
+      errorBox.innerText =
+        error.message ||
+        "حدث خطأ غير متوقع.";
+
+
+      errorBox.style.display =
+        "block";
+
+
+    } finally {
+
+      button.disabled =
+        false;
+
+      status.style.display =
+        "none";
+
+    }
+
+  }
+
+
+  /*
+   * =====================================================
+   * عداد الأحرف
+   * =====================================================
+   */
+
+  const textarea =
+    document.getElementById("prompt");
+
+  textarea.addEventListener(
+    "input",
+    function() {
+
+      if (this.value.length > 2500) {
+
+        this.value =
+          this.value.substring(
+            0,
+            2500
+          );
+
+      }
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
